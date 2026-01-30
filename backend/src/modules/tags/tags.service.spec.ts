@@ -146,7 +146,7 @@ describe('TagsService', () => {
       repository.create.mockImplementation(
         (dto: any) => ({ ...dto, id: 'new-id' } as any),
       );
-      repository.save.mockResolvedValue([]);
+      repository.save.mockResolvedValue([] as any);
 
       const result = await service.findOrCreateMany(tagNames);
 

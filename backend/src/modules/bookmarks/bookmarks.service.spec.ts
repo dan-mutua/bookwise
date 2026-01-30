@@ -90,7 +90,7 @@ describe('BookmarksService', () => {
       ];
 
       mlService.classifyBookmark.mockResolvedValue(mlResult);
-      tagsService.findOrCreateMany.mockResolvedValue(mockTags);
+      tagsService.findOrCreateMany.mockResolvedValue(mockTags as any);
       bookmarkRepository.create.mockReturnValue(mockBookmark as any);
       bookmarkRepository.save.mockResolvedValue(mockBookmark as any);
       bookmarkRepository.findOne.mockResolvedValue({
@@ -239,7 +239,7 @@ describe('BookmarksService', () => {
       ];
 
       bookmarkRepository.findOne.mockResolvedValue(mockBookmark as any);
-      tagsService.findOrCreateMany.mockResolvedValue(newTags);
+      tagsService.findOrCreateMany.mockResolvedValue(newTags as any);
       bookmarkRepository.save.mockResolvedValue(mockBookmark as any);
 
       await service.update('1', 'user-1', updateDto);
