@@ -4,6 +4,10 @@ import { Type } from 'class-transformer';
 export class QueryBookmarkDto {
   @IsOptional()
   @IsString()
+  userId?: string;
+
+  @IsOptional()
+  @IsString()
   category?: string;
 
   @IsOptional()
