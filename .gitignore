@@ -2,17 +2,19 @@
 node_modules/
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-.Python
+.venv/
 venv/
-env/
-.venv
+
+# Environment
+.env
+.env.local
+.env*.local
 
 # Build outputs
 dist/
 build/
-*.egg-info/
+.next/
+out/
 
 # IDE
 .vscode/
@@ -21,27 +23,25 @@ build/
 *.swo
 *~
 
-# Environment
-.env
-.env.local
-.env.*.local
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-
 # OS
 .DS_Store
 Thumbs.db
 
+# Logs
+*.log
+npm-debug.log*
+logs/
+
 # Database
 *.db
 *.sqlite
+postgres_data/
 
-# Docker
-.dockerignore
-
-# Test coverage
+# Testing
 coverage/
 .nyc_output/
+
+# Misc
+.cache/
+tmp/
+temp/
