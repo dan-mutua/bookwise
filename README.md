@@ -4,6 +4,7 @@ A production-ready bookmark management system with ML-powered automatic classifi
 
 ## Architecture
 
+- **Frontend**: Next.js 15 + TypeScript + Tailwind CSS + Framer Motion
 - **Backend**: NestJS + TypeORM + PostgreSQL
 - **ML Service**: FastAPI + Python (rule-based classifier)
 - **Deployment**: Docker Compose multi-service setup
@@ -39,6 +40,7 @@ docker-compose up --build
 ```
 
 3. Services will be available at:
+   - Frontend: http://localhost:3000
    - Backend API: http://localhost:3001/api
    - ML Service: http://localhost:5000
    - PostgreSQL: localhost:5432
@@ -347,6 +349,27 @@ npm run test:cov      # With coverage
 
 ```
 bookwise/
+├── frontend/                   # Next.js frontend
+│   ├── app/                   # App router pages
+│   │   ├── layout.tsx        # Root layout
+│   │   ├── page.tsx          # Home page
+│   │   └── globals.css       # Global styles
+│   ├── components/            # React components
+│   │   ├── BookmarkCard.tsx  # Bookmark card
+│   │   ├── Sidebar.tsx       # Desktop navigation
+│   │   ├── MobileNav.tsx     # Mobile navigation
+│   │   ├── SearchBar.tsx     # Search input
+│   │   ├── FilterPills.tsx   # Category filters
+│   │   ├── Button.tsx        # Button component
+│   │   └── AddBookmarkModal.tsx # Add bookmark form
+│   ├── lib/                   # Utilities
+│   │   └── api.ts            # API client
+│   ├── hooks/                 # React hooks
+│   │   ├── useBookmarks.ts   # Bookmark data
+│   │   └── useTags.ts        # Tag data
+│   ├── Dockerfile
+│   └── package.json
+│
 ├── backend/                    # NestJS API service
 │   ├── src/
 │   │   ├── main.ts            # Application entry point
@@ -371,6 +394,39 @@ bookwise/
 ├── docker-compose.yml         # Multi-service orchestration
 └── README.md
 ```
+
+## Frontend Design
+
+### Visual System
+
+The frontend features a distinctive design inspired by vintage technical manuals and brutalist aesthetics:
+
+**Typography:**
+- Display: Syne (bold, geometric headings)
+- Body: IBM Plex Sans (readable, technical)
+- Mono: Martian Mono (code and metadata)
+
+**Color Palette:**
+- Primary: Bold red (#e63946) to orange (#f77f00) gradients
+- Surface: Warm off-white (#faf9f7) with subtle texture
+- Text: Deep purple-black (#1a0b2e) for maximum contrast
+- Categories: Vibrant, saturated colors for each category
+
+**Design Principles:**
+- High contrast for readability
+- Gradient mesh backgrounds for depth
+- Staggered animations on page load
+- Mobile-first responsive design
+- Touch-optimized interactions
+
+### Components
+
+- **BookmarkCard**: Displays bookmark with favicon, tags, ML badge, and favorite star
+- **Sidebar**: Desktop navigation with categories and user profile
+- **MobileNav**: Bottom navigation for mobile devices
+- **SearchBar**: Full-text search with focus animations
+- **FilterPills**: Category filters with active state
+- **AddBookmarkModal**: Form to create new bookmarks
 
 ## Error Handling
 
