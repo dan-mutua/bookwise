@@ -7,6 +7,9 @@ import { SearchBar } from '@/components/SearchBar';
 import { FilterPills } from '@/components/FilterPills';
 import { BookmarkCard } from '@/components/BookmarkCard';
 import { Button } from '@/components/Button';
+import { MobileHeader } from '@/components/MobileHeader';
+import { MobileNav } from '@/components/MobileNav';
+import { AddBookmarkModal } from '@/components/AddBookmarkModal';
 
 const mockBookmarks = [
   {
@@ -123,6 +126,7 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [bookmarks, setBookmarks] = useState(mockBookmarks);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const handleFavoriteToggle = (id: string) => {
     setBookmarks(prev =>
@@ -134,37 +138,58 @@ export default function HomePage() {
     setBookmarks(prev => prev.filter(b => b.id !== id));
   };
 
+  const handleAddBookmark = async (data: { url: string; title: string; description?: string }) => {
+    const newBookmark = {
+      id: String(Date.now()),
+      ...data,
+      favicon: '',
+      isFavorite: false,
+      mlCategory: 'uncategorized',
+      mlConfidence: 0,
+      tags: [],
+      createdAt: new Date().toISOString(),
+    };
+    setBookmarks(prev => [newBookmark, ...prev]);
+  };
+
   return (
     <div className="flex h-screen bg-surface-base overflow-hidden">
-      <Sidebar categories={mockCategories} />
+      <div className="hidden md:block">
+        <Sidebar categories={mockCategories} />
+      </div>
 
-      <main className="flex-1 overflow-y-auto">
+      <MobileHeader
+        title="Bookmarks"
+        onAddClick={() => setIsAddModalOpen(true)}
+      />
+
+      <main className="flex-1 overflow-y-auto pb-20 md:pb-0">
         <div className="gradient-mesh min-h-full">
-          <div className="max-w-7xl mx-auto p-8">
+          <div className="max-w-7xl mx-auto p-4 md:p-8">
             {/* Header */}
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-8"
+              className="mb-6 md:mb-8 hidden md:block"
             >
               <div className="flex items-start justify-between mb-3">
                 <div>
-                  <h1 className="font-display font-bold text-3xl text-text-primary mb-1">
+                  <h1 className="font-display font-bold text-2xl md:text-3xl text-text-primary mb-1">
                     My Bookmarks
                   </h1>
-                  <p className="text-sm text-text-secondary font-mono">
+                  <p className="text-xs md:text-sm text-text-secondary font-mono">
                     64 bookmarks <span className="text-text-muted">•</span> 12 added this week
                   </p>
                 </div>
-                <Button variant="primary" icon="+" size="md">
+                <Button variant="primary" icon="+" size="md" onClick={() => setIsAddModalOpen(true)}>
                   Add Bookmark
                 </Button>
               </div>
             </motion.div>
 
             {/* Search and Filters */}
-            <div className="mb-8 space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="mb-6 md:mb-8 space-y-3 md:space-y-4">
+              <div className="w-full md:max-w-md">
                 <SearchBar
                   value={searchQuery}
                   onChange={setSearchQuery}
@@ -210,6 +235,14 @@ export default function HomePage() {
           </div>
         </div>
       </main>
+
+      <MobileNav />
+
+      <AddBookmarkModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddBookmark}
+      />
     </div>
   );
 }
