@@ -33,10 +33,6 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
   body {
     @apply bg-surface-base text-text-primary font-body;
     font-feature-settings: 'liga' 1, 'calt' 1;
