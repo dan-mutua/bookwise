@@ -128,6 +128,15 @@ export default function HomePage() {
   const [bookmarks, setBookmarks] = useState(mockBookmarks);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
+  // Filter bookmarks based on active category and search query
+  const filteredBookmarks = bookmarks.filter(bookmark => {
+    const matchesCategory = activeFilter === 'all' || bookmark.mlCategory === activeFilter;
+    const matchesSearch = !searchQuery || 
+      bookmark.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bookmark.description?.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
   const handleFavoriteToggle = (id: string) => {
     setBookmarks(prev =>
       prev.map(b => b.id === id ? { ...b, isFavorite: !b.isFavorite } : b)
@@ -157,7 +166,11 @@ export default function HomePage() {
   return (
     <div className="flex h-screen bg-surface-base overflow-hidden">
       <div className="hidden md:block">
-        <Sidebar categories={mockCategories} />
+        <Sidebar 
+          categories={mockCategories} 
+          activeCategory={activeFilter}
+          onCategoryChange={setActiveFilter}
+        />
       </div>
 
       <MobileHeader
@@ -172,9 +185,9 @@ export default function HomePage() {
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6 md:mb-8 hidden md:block"
+              className="mb-6 md:mb-8 hidden md:block bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-text-primary/10 shadow-sm"
             >
-              <div className="flex items-start justify-between mb-3">
+              <div className="flex items-start justify-between">
                 <div>
                   <h1 className="font-display font-bold text-2xl md:text-3xl text-text-primary mb-1">
                     My Bookmarks
@@ -207,7 +220,7 @@ export default function HomePage() {
 
             {/* Bookmark Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {bookmarks.map((bookmark, index) => (
+              {filteredBookmarks.map((bookmark, index) => (
                 <BookmarkCard
                   key={bookmark.id}
                   {...bookmark}
@@ -219,7 +232,7 @@ export default function HomePage() {
             </div>
 
             {/* Empty State */}
-            {bookmarks.length === 0 && (
+            {filteredBookmarks.length === 0 && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}

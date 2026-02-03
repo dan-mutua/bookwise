@@ -131,12 +131,8 @@ export function BookmarkCard({
         <div className="flex items-center justify-between pt-3 border-t border-text-primary/5">
           <p className="text-[11px] text-text-muted font-mono">{timeAgo}</p>
 
-          {/* Hover actions */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isHovered ? 1 : 0 }}
-            className="flex gap-2"
-          >
+          {/* Actions - always visible */}
+          <div className="flex gap-2">
             <a
               href={url}
               target="_blank"
@@ -153,7 +149,7 @@ export function BookmarkCard({
                 Delete
               </button>
             )}
-          </motion.div>
+          </div>
         </div>
       </div>
     </motion.div>

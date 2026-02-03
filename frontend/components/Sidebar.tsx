@@ -22,6 +22,8 @@ interface Category {
 
 interface SidebarProps {
   categories: Category[];
+  activeCategory?: string;
+  onCategoryChange?: (categoryId: string) => void;
 }
 
 const navItems: NavItem[] = [
@@ -31,7 +33,7 @@ const navItems: NavItem[] = [
   { id: 'tags', label: 'Tags', icon: '🏷️', href: '/tags' },
 ];
 
-export function Sidebar({ categories }: SidebarProps) {
+export function Sidebar({ categories, activeCategory, onCategoryChange }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -99,30 +101,39 @@ export function Sidebar({ categories }: SidebarProps) {
             Categories
           </h2>
           <div className="space-y-1">
-            {categories.map((category, index) => (
-              <motion.button
-                key={category.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 + index * 0.05 }}
-                className={clsx(
-                  'w-full px-4 py-2 rounded-lg transition-all duration-200',
-                  'flex items-center justify-between',
-                  'hover:bg-surface-muted/50 text-text-secondary hover:text-text-primary'
-                )}
-              >
-                <div className="flex items-center gap-2">
-                  <div
-                    className="w-2 h-2 rounded-full"
-                    style={{ backgroundColor: category.color }}
-                  />
-                  <span className="text-sm capitalize">{category.name}</span>
-                </div>
-                <span className="text-xs font-mono text-text-muted">
-                  {category.count}
-                </span>
-              </motion.button>
-            ))}
+            {categories.map((category, index) => {
+              const isActive = activeCategory === category.id;
+              return (
+                <motion.button
+                  key={category.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2 + index * 0.05 }}
+                  onClick={() => onCategoryChange?.(category.id)}
+                  className={clsx(
+                    'w-full px-4 py-2 rounded-lg transition-all duration-200',
+                    'flex items-center justify-between',
+                    isActive
+                      ? 'bg-gradient-to-r from-brand-primary to-brand-accent text-white shadow-md'
+                      : 'hover:bg-surface-muted/50 text-text-secondary hover:text-text-primary'
+                  )}
+                >
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-2 h-2 rounded-full"
+                      style={{ backgroundColor: isActive ? '#ffffff' : category.color }}
+                    />
+                    <span className="text-sm capitalize">{category.name}</span>
+                  </div>
+                  <span className={clsx(
+                    'text-xs font-mono',
+                    isActive ? 'text-white/80 font-semibold' : 'text-text-muted'
+                  )}>
+                    {category.count}
+                  </span>
+                </motion.button>
+              );
+            })}
           </div>
         </div>
       </nav>
