@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sidebar } from '@/components/Sidebar';
 import { SearchBar } from '@/components/SearchBar';
-import { FilterPills } from '@/components/FilterPills';
 import { BookmarkCard } from '@/components/BookmarkCard';
 import { Button } from '@/components/Button';
 import { MobileHeader } from '@/components/MobileHeader';
@@ -101,45 +100,53 @@ const mockBookmarks = [
       { id: 't12', name: 'education', color: '#2a9d8f' },
       { id: 't13', name: 'ml', color: '#0077b6' },
     ],
-    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
   },
 ];
 
 const mockCategories = [
-  { id: 'technology', name: 'technology', count: 24, color: '#0077b6' },
-  { id: 'news', name: 'news', count: 8, color: '#fb8500' },
-  { id: 'social', name: 'social', count: 12, color: '#06a77d' },
-  { id: 'entertainment', name: 'entertainment', count: 15, color: '#b5179e' },
-  { id: 'shopping', name: 'shopping', count: 6, color: '#d00000' },
-  { id: 'education', name: 'education', count: 11, color: '#2a9d8f' },
-  { id: 'reference', name: 'reference', count: 9, color: '#6c757d' },
+  { id: 'technology', name: 'Technology', count: 4, color: '#0077b6' },
+  { id: 'news', name: 'News', count: 2, color: '#fb8500' },
+  { id: 'social', name: 'Social', count: 0, color: '#06a77d' },
+  { id: 'entertainment', name: 'Entertainment', count: 3, color: '#b5179e' },
+  { id: 'shopping', name: 'Shopping', count: 1, color: '#d00000' },
+  { id: 'education', name: 'Education', count: 2, color: '#2a9d8f' },
+  { id: 'reference', name: 'Reference', count: 1, color: '#6c757d' },
 ];
 
-const filters = [
-  { id: 'all', label: 'All', count: 64 },
-  { id: 'technology', label: 'Technology', count: 24 },
-  { id: 'news', label: 'News', count: 8 },
-  { id: 'social', label: 'Social', count: 12 },
-];
-
-export default function HomePage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState('all');
+export default function TagsPage() {
   const [bookmarks, setBookmarks] = useState(mockBookmarks);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  // Filter bookmarks based on active category and search query
+  // Get all unique tags
+  const allTags = Array.from(
+    new Map(
+      bookmarks
+        .flatMap(b => b.tags)
+        .map(tag => [tag.id, tag])
+    ).values()
+  );
+
+  // Filter bookmarks by tag and search
   const filteredBookmarks = bookmarks.filter(bookmark => {
-    const matchesCategory = activeFilter === 'all' || bookmark.mlCategory === activeFilter;
-    const matchesSearch = !searchQuery || 
+    const matchesSearch = 
       bookmark.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      bookmark.description?.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+      bookmark.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bookmark.url.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    if (selectedTag) {
+      const hasTag = bookmark.tags.some(tag => tag.id === selectedTag);
+      return matchesSearch && hasTag;
+    }
+    
+    return matchesSearch;
   });
 
   const handleFavoriteToggle = (id: string) => {
     setBookmarks(prev =>
-      prev.map(b => b.id === id ? { ...b, isFavorite: !b.isFavorite } : b)
+      prev.map(b => (b.id === id ? { ...b, isFavorite: !b.isFavorite } : b))
     );
   };
 
@@ -167,14 +174,13 @@ export default function HomePage() {
     <div className="flex h-screen bg-surface-base overflow-hidden">
       <div className="hidden md:block">
         <Sidebar 
-          categories={mockCategories} 
-          activeCategory={activeFilter}
-          onCategoryChange={setActiveFilter}
+          categories={mockCategories}
+          onCategoryChange={() => {}}
         />
       </div>
 
       <MobileHeader
-        title="Bookmarks"
+        title="Tags"
         onAddClick={() => setIsAddModalOpen(true)}
       />
 
@@ -190,10 +196,10 @@ export default function HomePage() {
               <div className="flex items-start justify-between">
                 <div>
                   <h1 className="font-display font-bold text-2xl md:text-3xl text-text-primary mb-1">
-                    My Bookmarks
+                    🏷️ Browse by Tags
                   </h1>
                   <p className="text-xs md:text-sm text-text-secondary font-mono">
-                    {bookmarks.length} bookmarks <span className="text-text-muted">•</span> {filteredBookmarks.length} showing
+                    {allTags.length} tags <span className="text-text-muted">•</span> {bookmarks.length} bookmarks
                   </p>
                 </div>
                 <Button variant="accent" icon="+" size="md" onClick={() => setIsAddModalOpen(true)} className="glow-effect shadow-lg">
@@ -202,8 +208,8 @@ export default function HomePage() {
               </div>
             </motion.div>
 
-            {/* Search and Filters */}
-            <div className="mb-6 md:mb-8 space-y-3 md:space-y-4">
+            {/* Search and Tags */}
+            <div className="mb-6 md:mb-8 space-y-4">
               <div className="w-full md:max-w-md">
                 <SearchBar
                   value={searchQuery}
@@ -211,39 +217,67 @@ export default function HomePage() {
                   placeholder="Search bookmarks..."
                 />
               </div>
-              <FilterPills
-                filters={filters}
-                activeFilter={activeFilter}
-                onChange={setActiveFilter}
-              />
+              
+              {/* Tag Pills */}
+              {allTags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => setSelectedTag(null)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                      selectedTag === null
+                        ? 'bg-brand-primary text-white shadow-md'
+                        : 'bg-surface-muted text-text-secondary hover:bg-surface-elevated border-2 border-transparent'
+                    }`}
+                  >
+                    All Tags
+                  </button>
+                  {allTags.map(tag => (
+                    <button
+                      key={tag.id}
+                      onClick={() => setSelectedTag(tag.id)}
+                      className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                        selectedTag === tag.id
+                          ? 'text-white border-2'
+                          : 'bg-surface-muted text-text-secondary hover:border-2'
+                      }`}
+                      style={{
+                        backgroundColor: selectedTag === tag.id ? tag.color : undefined,
+                        borderColor: selectedTag !== tag.id ? tag.color : undefined,
+                      }}
+                    >
+                      {tag.name}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Bookmark Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {filteredBookmarks.map((bookmark, index) => (
-                <BookmarkCard
-                  key={bookmark.id}
-                  {...bookmark}
-                  onFavoriteToggle={handleFavoriteToggle}
-                  onDelete={handleDelete}
-                  delay={index * 0.05}
-                />
-              ))}
-            </div>
-
-            {/* Empty State */}
-            {filteredBookmarks.length === 0 && (
+            {/* Bookmarks Grid */}
+            {filteredBookmarks.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {filteredBookmarks.map((bookmark, index) => (
+                  <BookmarkCard
+                    key={bookmark.id}
+                    {...bookmark}
+                    onFavoriteToggle={handleFavoriteToggle}
+                    onDelete={handleDelete}
+                    delay={index * 0.05}
+                  />
+                ))}
+              </div>
+            ) : (
+              /* Empty State */
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center py-20"
               >
-                <div className="text-6xl mb-4">📭</div>
+                <div className="text-6xl mb-4">🏷️</div>
                 <h3 className="font-display font-semibold text-xl text-text-primary mb-2">
-                  No bookmarks found
+                  No bookmarks with this tag
                 </h3>
                 <p className="text-text-secondary">
-                  Start adding bookmarks to see them here
+                  Try selecting a different tag or adding new bookmarks
                 </p>
               </motion.div>
             )}
