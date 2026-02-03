@@ -35,39 +35,39 @@ export function Button({
 
   if (variant === 'icon') {
     return (
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+        <button
+          className={clsx(
+            baseStyles,
+            variants.icon,
+            'w-11 h-11 flex items-center justify-center rounded-xl text-lg',
+            className
+          )}
+          disabled={disabled}
+          {...props}
+        >
+          {icon || children}
+        </button>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div whileHover={{ scale: disabled ? 1 : 1.02 }} whileTap={{ scale: disabled ? 1 : 0.98 }}>
+      <button
         className={clsx(
           baseStyles,
-          variants.icon,
-          'w-11 h-11 flex items-center justify-center rounded-xl text-lg',
+          variants[variant],
+          sizes[size],
+          'flex items-center justify-center gap-2',
           className
         )}
         disabled={disabled}
         {...props}
       >
-        {icon || children}
-      </motion.button>
-    );
-  }
-
-  return (
-    <motion.button
-      whileHover={{ scale: disabled ? 1 : 1.02 }}
-      whileTap={{ scale: disabled ? 1 : 0.98 }}
-      className={clsx(
-        baseStyles,
-        variants[variant],
-        sizes[size],
-        'flex items-center justify-center gap-2',
-        className
-      )}
-      disabled={disabled}
-      {...props}
-    >
-      {icon && <span className="text-base">{icon}</span>}
-      {children}
-    </motion.button>
+        {icon && <span className="text-base">{icon}</span>}
+        {children}
+      </button>
+    </motion.div>
   );
 }

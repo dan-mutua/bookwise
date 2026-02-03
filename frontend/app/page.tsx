@@ -141,7 +141,9 @@ export default function HomePage() {
   const handleAddBookmark = async (data: { url: string; title: string; description?: string }) => {
     const newBookmark = {
       id: String(Date.now()),
-      ...data,
+      url: data.url,
+      title: data.title,
+      description: data.description || '',
       favicon: '',
       isFavorite: false,
       mlCategory: 'uncategorized',
