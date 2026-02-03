@@ -100,7 +100,7 @@ export function Sidebar({ categories, activeCategory, onCategoryChange }: Sideba
           <h2 className="px-4 mb-3 text-[11px] font-mono font-semibold text-text-muted uppercase tracking-wider">
             Categories
           </h2>
-          <div className="space-y-1">
+          <div className="space-y-2">
             {categories.map((category, index) => {
               const isActive = activeCategory === category.id;
               return (
@@ -111,23 +111,24 @@ export function Sidebar({ categories, activeCategory, onCategoryChange }: Sideba
                   transition={{ delay: 0.2 + index * 0.05 }}
                   onClick={() => onCategoryChange?.(category.id)}
                   className={clsx(
-                    'w-full px-4 py-2 rounded-lg transition-all duration-200',
+                    'w-full px-4 py-3 rounded-lg transition-all duration-200 font-display font-semibold',
                     'flex items-center justify-between',
+                    'relative overflow-hidden',
                     isActive
-                      ? 'bg-gradient-to-r from-brand-primary to-brand-accent text-white shadow-md'
-                      : 'hover:bg-surface-muted/50 text-text-secondary hover:text-text-primary'
+                      ? 'bg-gradient-to-r from-brand-primary to-brand-accent text-white shadow-lg border-2 border-brand-light'
+                      : 'hover:bg-surface-muted/70 text-text-secondary hover:text-text-primary border-2 border-transparent'
                   )}
                 >
                   <div className="flex items-center gap-2">
                     <div
-                      className="w-2 h-2 rounded-full"
+                      className="w-2.5 h-2.5 rounded-full transition-all"
                       style={{ backgroundColor: isActive ? '#ffffff' : category.color }}
                     />
                     <span className="text-sm capitalize">{category.name}</span>
                   </div>
                   <span className={clsx(
-                    'text-xs font-mono',
-                    isActive ? 'text-white/80 font-semibold' : 'text-text-muted'
+                    'text-xs font-mono font-bold px-2 py-0.5 rounded-full',
+                    isActive ? 'bg-white/30 text-white' : 'bg-surface-muted text-text-muted'
                   )}>
                     {category.count}
                   </span>

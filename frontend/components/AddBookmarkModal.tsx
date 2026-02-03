@@ -127,6 +127,7 @@ export function AddBookmarkModal({ isOpen, onClose, onSubmit }: AddBookmarkModal
                   <Button
                     type="button"
                     variant="secondary"
+                    size="md"
                     onClick={onClose}
                     className="flex-1"
                     disabled={loading}
@@ -135,11 +136,12 @@ export function AddBookmarkModal({ isOpen, onClose, onSubmit }: AddBookmarkModal
                   </Button>
                   <Button
                     type="submit"
-                    variant="primary"
-                    className="flex-1"
+                    variant="accent"
+                    size="md"
+                    className="flex-1 glow-effect"
                     disabled={loading}
                   >
-                    {loading ? 'Adding...' : 'Add Bookmark'}
+                    {loading ? '⏳ Adding...' : '✓ Add Bookmark'}
                   </Button>
                 </div>
               </form>

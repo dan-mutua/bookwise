@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import clsx from 'clsx';
+import { Button } from './Button';
 
 interface BookmarkCardProps {
   id: string;
@@ -133,21 +134,28 @@ export function BookmarkCard({
 
           {/* Actions - always visible */}
           <div className="flex gap-2">
-            <a
-              href={url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-medium text-brand-primary hover:text-brand-light transition-colors"
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(url, '_blank', 'noopener,noreferrer');
+              }}
+              icon="🔗"
+              className="text-xs"
             >
               Visit
-            </a>
+            </Button>
             {onDelete && (
-              <button
+              <Button
+                variant="secondary"
+                size="sm"
                 onClick={() => onDelete(id)}
-                className="text-xs font-medium text-text-muted hover:text-red-500 transition-colors"
+                icon="🗑️"
+                className="text-xs hover:border-red-500 hover:text-red-500"
               >
                 Delete
-              </button>
+              </Button>
             )}
           </div>
         </div>

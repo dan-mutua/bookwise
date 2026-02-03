@@ -196,7 +196,7 @@ export default function HomePage() {
                     64 bookmarks <span className="text-text-muted">•</span> 12 added this week
                   </p>
                 </div>
-                <Button variant="primary" icon="+" size="md" onClick={() => setIsAddModalOpen(true)}>
+                <Button variant="accent" icon="+" size="md" onClick={() => setIsAddModalOpen(true)} className="glow-effect shadow-lg">
                   Add Bookmark
                 </Button>
               </div>

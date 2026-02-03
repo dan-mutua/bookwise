@@ -31,12 +31,12 @@ export function MobileHeader({ title, onMenuClick, onAddClick }: MobileHeaderPro
         </h1>
 
         <Button
-          variant="icon"
+          variant="accent"
+          size="sm"
           onClick={onAddClick}
-          className="bg-gradient-to-r from-brand-primary to-brand-accent text-white border-0"
-        >
-          +
-        </Button>
+          icon="+"
+          className="border-0 shadow-lg"
+        />
       </div>
     </motion.header>
   );
